@@ -1,0 +1,9 @@
+{
+  "forge_marker" : 1,
+  "defaults": {
+    "textures": {
+      "all": "researchsystem:blocks/blockLaboratory"
+    }
+  },
+  "variants": { "normal": { "model": "researchsystem:block"}}
+}

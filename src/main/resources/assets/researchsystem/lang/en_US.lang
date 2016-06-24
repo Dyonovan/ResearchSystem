@@ -1,0 +1,4 @@
+itemGroup.researchsystem.tabResearchSystem=Research System
+
+tile.researchsystem:blockLaboratory.name=Laboratory
+tile.researchsystem:blockResearchManager.name=Research Manager

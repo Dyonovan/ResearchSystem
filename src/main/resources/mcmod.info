@@ -1,0 +1,16 @@
+[
+{
+  "modid": "researchsystem",
+  "name": "Minecraft Research System",
+  "description": "Adds a reseach system like that of Factorio.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Dyonovan"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
