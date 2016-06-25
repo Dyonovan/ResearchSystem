@@ -1,8 +1,6 @@
 package com.dyonovan.researchsystem.common.container;
 
 import com.dyonovan.researchsystem.common.tileentity.TileResearchManager;
-import com.teambr.bookshelf.common.container.BaseContainer;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;

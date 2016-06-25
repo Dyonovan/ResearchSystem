@@ -1,7 +1,6 @@
 package com.dyonovan.researchsystem.common.tileentity;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 
 import javax.annotation.Nonnull;
@@ -17,14 +16,13 @@ import java.util.UUID;
  * @author Dyonovan
  * @since 6/24/2016
  */
-public class TileResearchManager extends TileEntity implements ITickable {
+public class TileResearchManager extends BaseTile implements ITickable {
 
     private UUID owner;
 
     public TileResearchManager() {
 
     }
-
 
     @Override
     public void update() {
@@ -39,6 +37,12 @@ public class TileResearchManager extends TileEntity implements ITickable {
         return owner;
     }
 
+    public String getOwnerName() {
+        if (owner != null)
+            return worldObj.getPlayerEntityByUUID(owner).getDisplayNameString();
+        else return "";
+    }
+
     @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound tag) {
@@ -50,6 +54,8 @@ public class TileResearchManager extends TileEntity implements ITickable {
     @Override
     public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
-        setOwner(UUID.fromString(tag.getString("Owner")));
+        String owner = tag.getString("Owner");
+        if (!owner.isEmpty())
+            setOwner(UUID.fromString(owner));
     }
 }
