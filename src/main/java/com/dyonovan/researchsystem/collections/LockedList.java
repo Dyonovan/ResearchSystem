@@ -29,9 +29,9 @@ public class LockedList {
         this.tier4 = tier4;
     }
 
-    public String getName() {
+    /*public String getName() {
         return name;
-    }
+    }*/
 
     public ArrayList<String> getBlockList() {
         return blockList;

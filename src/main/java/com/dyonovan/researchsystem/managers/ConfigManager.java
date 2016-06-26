@@ -1,5 +1,6 @@
 package com.dyonovan.researchsystem.managers;
 
+import com.dyonovan.researchsystem.ResearchSystem;
 import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
@@ -16,9 +17,9 @@ import java.io.File;
  */
 public class ConfigManager {
 
-    public static void preInit(String configFolder) {
+    public static void preInit() {
 
-        Configuration config = new Configuration(new File(configFolder + File.separator + "ResearchSystem.cfg"));
+        Configuration config = new Configuration(new File(ResearchSystem.configDir + File.separator + "ResearchSystem.cfg"));
 
         config.load();
 

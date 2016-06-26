@@ -38,6 +38,8 @@ import java.io.File;
         updateJSON     = Reference.Mod.UPDATE_JSON)
 public class ResearchSystem {
 
+    public static String configDir;
+
     @Instance(Reference.Mod.MOD_ID)
     public static ResearchSystem instance;
 
@@ -55,7 +57,8 @@ public class ResearchSystem {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        ConfigManager.preInit(event.getModConfigurationDirectory().getAbsolutePath() + File.separator + "ResearchSystem");
+        configDir = event.getModConfigurationDirectory().getAbsolutePath() + File.separator + "ResearchSystem";
+        ConfigManager.preInit();
         BlockManager.preInit();
         proxy.preInit();
     }
