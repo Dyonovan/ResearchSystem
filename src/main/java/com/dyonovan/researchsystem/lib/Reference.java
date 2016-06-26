@@ -25,4 +25,8 @@ public class Reference {
         public static final int RESEARCH_MANAGER_GUI = 1;
     }
 
+    public static final class FileLocs {
+        public static final String LOCKED_LISTS = "LockedLists";
+    }
+
 }

@@ -1,10 +1,11 @@
 package com.dyonovan.researchsystem;
 
 import com.dyonovan.researchsystem.client.gui.GuiHandler;
+import com.dyonovan.researchsystem.common.CommonProxy;
 import com.dyonovan.researchsystem.lib.Reference;
 import com.dyonovan.researchsystem.managers.BlockManager;
 import com.dyonovan.researchsystem.managers.ConfigManager;
-import com.dyonovan.researchsystem.common.CommonProxy;
+import com.dyonovan.researchsystem.managers.ResearchManager;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -61,6 +62,7 @@ public class ResearchSystem {
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
+        ResearchManager.init();
         NetworkRegistry.INSTANCE.registerGuiHandler(ResearchSystem.instance, new GuiHandler());
     }
 
