@@ -54,8 +54,8 @@ if (build == null || build == '') {
 group= "com.dyonovan.researchsystem" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ResearchSystem"
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 minecraft {
     version = config.minecraft_version + "-" + config.forge_version

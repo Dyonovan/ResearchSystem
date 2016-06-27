@@ -56,4 +56,8 @@ public class LockedList {
     public int getTier4() {
         return tier4;
     }
+
+    public String getName() {
+        return name;
+    }
 }

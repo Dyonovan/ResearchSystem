@@ -62,4 +62,8 @@ public class ResearchManager {
         }
         return lockedList != null && !lockedList.isEmpty();
     }
+
+    public static ArrayList<LockedList> getLockedList() {
+        return lockedList;
+    }
 }
