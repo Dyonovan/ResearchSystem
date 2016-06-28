@@ -34,7 +34,7 @@ public class OnCrafting {
                 ArrayList<String> research = event.player.getCapability(ResearchCapability.UNLOCKED_RESEARCH, null).getResearch();
                 if (!research.contains(list.getName())) {
                     //event.setCanceled(true);
-                    event.player.addChatMessage(new TextComponentString("You have not unlocked that item!"));
+                    event.player.addChatMessage(new TextComponentString("You have not unlocked that item!")); //TODO Localize
                 }
             }
         }

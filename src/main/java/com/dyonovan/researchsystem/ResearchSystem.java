@@ -3,6 +3,7 @@ package com.dyonovan.researchsystem;
 import com.dyonovan.researchsystem.capability.ResearchCapability;
 import com.dyonovan.researchsystem.client.gui.GuiHandler;
 import com.dyonovan.researchsystem.common.CommonProxy;
+import com.dyonovan.researchsystem.events.CraftingCatcher;
 import com.dyonovan.researchsystem.lib.Reference;
 import com.dyonovan.researchsystem.managers.BlockManager;
 import com.dyonovan.researchsystem.managers.ConfigManager;
@@ -19,6 +20,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.RecipeSorter;
 
 import java.io.File;
 
@@ -75,6 +78,8 @@ public class ResearchSystem {
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-
+        ResearchManager.removeRecipes();
+        GameRegistry.addRecipe(new CraftingCatcher());
+        RecipeSorter.register("Testing", CraftingCatcher.class, RecipeSorter.Category.SHAPED, "before:minecraft:shaped");
     }
 }

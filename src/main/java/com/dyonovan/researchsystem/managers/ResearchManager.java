@@ -6,11 +6,16 @@ import com.dyonovan.researchsystem.lib.Reference;
 import com.dyonovan.researchsystem.util.JsonUtils;
 import com.dyonovan.researchsystem.util.LogHelper;
 import com.google.gson.reflect.TypeToken;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * This file was created for Research System
@@ -24,7 +29,8 @@ import java.util.Arrays;
  */
 public class ResearchManager {
 
-    private static ArrayList<LockedList> lockedList = new ArrayList<>();
+    private static final ArrayList<LockedList> lockedList = new ArrayList<>();
+    private static final ArrayList<IRecipe> removedRecipes = new ArrayList<>();
 
     public static void init() {
         if (!loadFromFiles())
@@ -45,12 +51,7 @@ public class ResearchManager {
         File dir = new File(ResearchSystem.configDir + File.separator + Reference.FileLocs.LOCKED_LISTS);
         if (!dir.exists()) dir.mkdir();
 
-        FilenameFilter filterJson = new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.toLowerCase().endsWith(".json");
-            }
-        };
+        FilenameFilter filterJson = (dir1, name) -> name.toLowerCase().endsWith(".json");
 
         File[] files = dir.listFiles(filterJson);
         if (files.length <= 0) return false;
@@ -58,12 +59,32 @@ public class ResearchManager {
         TypeToken<ArrayList<LockedList>> type = new TypeToken<ArrayList<LockedList>>(){};
         for (File file : files) {
             ArrayList<LockedList> list = JsonUtils.readFromJson(type, file.toString());
-            if (list != null && !list.isEmpty()) lockedList.addAll(list); //TODO Check if name already exists
+            if (list != null && !list.isEmpty()) lockedList.addAll(list); //TODO Add Some checks ie: if name already exists
         }
-        return lockedList != null && !lockedList.isEmpty();
+        return !lockedList.isEmpty();
     }
 
     public static ArrayList<LockedList> getLockedList() {
         return lockedList;
+    }
+
+    public static ArrayList<IRecipe> getRemovedRecipes() { return removedRecipes; }
+
+    public static void removeRecipes() {
+        List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
+
+        for (LockedList list: lockedList) {
+            for (String block : list.getBlockList()) {
+                for (int i = 0; i < recipeList.size(); i++) {
+                    IRecipe recipe = recipeList.get(i);
+                    if (recipe.getRecipeOutput() == null) continue;
+                    ItemStack item = GameRegistry.makeItemStack(block, 0, 1, null);
+                    if (item != null && recipe.getRecipeOutput().isItemEqual(item)) {
+                        removedRecipes.add(recipeList.get(i));
+                        recipeList.remove(i);
+                    }
+                }
+            }
+        }
     }
 }
