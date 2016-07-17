@@ -1,8 +1,5 @@
 package com.dyonovan.researchsystem.managers;
 
-import com.dyonovan.researchsystem.events.OnCrafting;
-import net.minecraftforge.common.MinecraftForge;
-
 /**
  * This file was created for Research System
  * <p>
@@ -16,6 +13,6 @@ import net.minecraftforge.common.MinecraftForge;
 public class EventManager {
 
     public static void init() {
-        MinecraftForge.EVENT_BUS.register(new OnCrafting());
+
     }
 }

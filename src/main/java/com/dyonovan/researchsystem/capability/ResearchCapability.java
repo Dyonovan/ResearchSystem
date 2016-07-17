@@ -55,7 +55,7 @@ public class ResearchCapability {
 
     public static class EventHandler {
         @SubscribeEvent
-        public void playerLogin(AttachCapabilitiesEvent.Entity event) {
+        public void playerCreation(AttachCapabilitiesEvent.Entity event) {
             if (event.getEntity() instanceof EntityPlayer) {
                 event.addCapability(UNLOCKED, new Provider());
             }
@@ -64,7 +64,7 @@ public class ResearchCapability {
         @SubscribeEvent
         public void playerClone(PlayerEvent.Clone event) {
             if (event.isWasDeath()) {
-                //clone the capability
+                //TODO clone the capability
             }
         }
     }

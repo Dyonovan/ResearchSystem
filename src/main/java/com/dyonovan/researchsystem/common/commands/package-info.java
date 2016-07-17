@@ -10,7 +10,7 @@
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-package com.dyonovan.researchsystem.events;
+package com.dyonovan.researchsystem.common.commands;
 
 import mcp.MethodsReturnNonnullByDefault;
 

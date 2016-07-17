@@ -2,6 +2,7 @@ package com.dyonovan.researchsystem.managers;
 
 import com.dyonovan.researchsystem.ResearchSystem;
 import com.dyonovan.researchsystem.collections.LockedList;
+import com.dyonovan.researchsystem.collections.RemovedRecipes;
 import com.dyonovan.researchsystem.lib.Reference;
 import com.dyonovan.researchsystem.util.JsonUtils;
 import com.dyonovan.researchsystem.util.LogHelper;
@@ -30,7 +31,7 @@ import java.util.List;
 public class ResearchManager {
 
     private static final ArrayList<LockedList> lockedList = new ArrayList<>();
-    private static final ArrayList<IRecipe> removedRecipes = new ArrayList<>();
+    private static final ArrayList<RemovedRecipes> removedRecipes = new ArrayList<>();
 
     public static void init() {
         if (!loadFromFiles())
@@ -68,7 +69,7 @@ public class ResearchManager {
         return lockedList;
     }
 
-    public static ArrayList<IRecipe> getRemovedRecipes() { return removedRecipes; }
+    public static ArrayList<RemovedRecipes> getRemovedRecipes() { return removedRecipes; }
 
     public static void removeRecipes() {
         List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
@@ -80,7 +81,7 @@ public class ResearchManager {
                     if (recipe.getRecipeOutput() == null) continue;
                     ItemStack item = GameRegistry.makeItemStack(block, 0, 1, null);
                     if (item != null && recipe.getRecipeOutput().isItemEqual(item)) {
-                        removedRecipes.add(recipeList.get(i));
+                        removedRecipes.add(new RemovedRecipes(list.getName(), recipeList.get(i)));
                         recipeList.remove(i);
                     }
                 }

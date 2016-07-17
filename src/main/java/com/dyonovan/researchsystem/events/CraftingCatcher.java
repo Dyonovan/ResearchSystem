@@ -1,5 +1,7 @@
 package com.dyonovan.researchsystem.events;
 
+import com.dyonovan.researchsystem.capability.ResearchCapability;
+import com.dyonovan.researchsystem.collections.RemovedRecipes;
 import com.dyonovan.researchsystem.managers.ResearchManager;
 import com.google.common.base.Throwables;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,17 +26,17 @@ import java.lang.reflect.Field;
  */
 public class CraftingCatcher implements IRecipe {
 
-    private IRecipe stack;
+    private IRecipe recipe;
 
     @Override
     public boolean matches(InventoryCrafting inv, World world) {
         EntityPlayer player = findPlayer(inv);
         if (player == null) return false;
-        for (IRecipe recipe: ResearchManager.getRemovedRecipes()) {
-            stack = recipe;
+        for (RemovedRecipes removedRecipes: ResearchManager.getRemovedRecipes()) {
+            recipe = removedRecipes.getRecipe();
             if (recipe.matches(inv, world)) {
-                //TODO Check if its locked
-                return true;
+                if (player.getCapability(ResearchCapability.UNLOCKED_RESEARCH, null).getResearch().contains(removedRecipes.getName()))
+                    return true;
             }
         }
         return false;
@@ -43,23 +45,23 @@ public class CraftingCatcher implements IRecipe {
     @Nullable
     @Override
     public ItemStack getCraftingResult(InventoryCrafting inv) {
-        return (stack == null) ? null : stack.getCraftingResult(inv);
+        return (recipe == null) ? null : recipe.getCraftingResult(inv);
     }
 
     @Override
     public int getRecipeSize() {
-        return (stack == null) ? 0 : stack.getRecipeSize();
+        return (recipe == null) ? 0 : recipe.getRecipeSize();
     }
 
     @Nullable
     @Override
     public ItemStack getRecipeOutput() {
-        return (stack == null) ? null : stack.getRecipeOutput();
+        return (recipe == null) ? null : recipe.getRecipeOutput();
     }
 
     @Override
     public ItemStack[] getRemainingItems(InventoryCrafting inv) {
-        return stack.getRemainingItems(inv);
+        return recipe.getRemainingItems(inv);
     }
 
     private static final Field eventHandlerField = ReflectionHelper.findField(InventoryCrafting.class, "eventHandler");

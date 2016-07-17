@@ -15,6 +15,7 @@ import java.util.ArrayList;
  * @author Dyonovan
  * @since 6/26/2016
  */
+@SuppressWarnings("WeakerAccess")
 public class UnlockedResearch implements IResearchCapability {
 
     @Override
