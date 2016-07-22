@@ -35,6 +35,7 @@ public class UnlockedResearch implements IResearchCapability {
 
     @Override
     public void set(NBTTagList tag) {
+        unLocked.clear();
         for (int i = 0; i < tag.tagCount(); i++) {
             NBTTagCompound tagCompound = tag.getCompoundTagAt(i);
             String s = tagCompound.getString("String" + i);
