@@ -18,8 +18,13 @@ plugins {
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'scala'
 
 repositories {
+	maven {
+        name 'BR Repo'
+        url "http://www.teambrmodding.com/maven2/"
+    }
     maven { // The repo from which to get waila
         name "Mobius Repo"
         url "http://mobiusstrip.eu/maven"
@@ -69,9 +74,14 @@ minecraft {
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
 dependencies {
     //compile "mcp.mobius.waila:Waila:${config.WAILA_version}:dev"
     //deobfCompile "mezz.jei:jei_${config.minecraft_version}:${config.JEI_version}"
+	compile group: "com.teambr.bookshelf", name: "Bookshelf-API", version: "1.9.4-+", classifier: "dev", changing: true
 }
 
 processResources
