@@ -1,6 +1,5 @@
 package com.dyonovan.researchsystem.events;
 
-import com.dyonovan.researchsystem.capability.ResearchCapability;
 import com.dyonovan.researchsystem.collections.RemovedRecipes;
 import com.dyonovan.researchsystem.managers.ResearchManager;
 import com.google.common.base.Throwables;
@@ -35,7 +34,7 @@ public class CraftingCatcher implements IRecipe {
         for (RemovedRecipes removedRecipes: ResearchManager.getRemovedRecipes()) {
             recipe = removedRecipes.getRecipe();
             if (recipe.matches(inv, world)) {
-                //if (player.getCapability(ResearchCapability.UNLOCKED_RESEARCH, null).getResearch().contains(removedRecipes.getName())) TODO
+                if (ResearchManager.isUnlocked(player, removedRecipes.getName()))
                     return true;
             }
         }
