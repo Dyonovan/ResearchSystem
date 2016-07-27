@@ -4,7 +4,7 @@ import java.io.File
 
 import com.dyonovan.researchsystem.capability.ResearchCapability
 import com.dyonovan.researchsystem.common.CommonProxy
-import com.dyonovan.researchsystem.common.commands.UnlockCommand
+import com.dyonovan.researchsystem.common.commands.{IsUnlockCommand, UnlockCommand}
 import com.dyonovan.researchsystem.events.CraftingCatcher
 import com.dyonovan.researchsystem.lib.Reference
 import com.dyonovan.researchsystem.managers.{BlockManager, ConfigManager, EventManager, ResearchManager}
@@ -65,5 +65,6 @@ object ResearchSystem {
 
     @EventHandler def serverLoad(event: FMLServerStartingEvent) {
         event.registerServerCommand(new UnlockCommand)
+        event.registerServerCommand(new IsUnlockCommand)
     }
 }

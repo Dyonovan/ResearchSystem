@@ -1,5 +1,6 @@
 package com.dyonovan.researchsystem.events
 
+import com.dyonovan.researchsystem.managers.ResearchManager
 import com.dyonovan.researchsystem.util.SaveResearchData
 import net.minecraftforge.event.world.WorldEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent

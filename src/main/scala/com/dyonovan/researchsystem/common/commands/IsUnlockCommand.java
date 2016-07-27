@@ -1,7 +1,5 @@
 package com.dyonovan.researchsystem.common.commands;
 
-import com.dyonovan.researchsystem.capability.ResearchCapability;
-import com.dyonovan.researchsystem.collections.GroupResearch;
 import com.dyonovan.researchsystem.managers.ResearchManager;
 import com.dyonovan.researchsystem.util.TextUtils;
 import net.minecraft.command.CommandBase;
@@ -15,7 +13,6 @@ import net.minecraft.util.math.BlockPos;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * This file was created for Research System
@@ -27,16 +24,16 @@ import java.util.UUID;
  * @author Dyonovan
  * @since 6/28/2016
  */
-public class UnlockCommand extends CommandBase {
+public class IsUnlockCommand extends CommandBase {
 
     @Override
     public String getCommandName() {
-        return "research_unlock";
+        return "research_isunlock";
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return TextUtils.translate("researchsystem:commands.unlock.usage");
+        return TextUtils.translate("researchsystem:commands.isunlock.usage");
     }
 
     @Override
@@ -45,23 +42,16 @@ public class UnlockCommand extends CommandBase {
 
         EntityPlayer player = getPlayer(server, sender, args[0]);
 
-        if (player.getCapability(ResearchCapability.UNLOCKED_RESEARCH, null).getGroup() == null) {
-            player.getCapability(ResearchCapability.UNLOCKED_RESEARCH, null).setGroup(null);
-        }
-
-        UUID group = player.getCapability(ResearchCapability.UNLOCKED_RESEARCH, null).getGroup();
-        if (!ResearchManager.getGroupResearch().contains(group)) {
-            if (!ResearchManager.isUnlocked(player, args[1])) {
-                ResearchManager.setUnlocked(group, args[1]);
-                    //TODO add msg saying its been added
-            } else throw new WrongUsageException("researchsystem:commands.unlock.alreadyunlocked");
-        }
+        if (ResearchManager.isUnlocked(player, args[1])) {
+            //TODO fix message
+            throw new WrongUsageException("UNLOCKED");
+        } else throw new WrongUsageException("LOCKED");
     }
 
     @Override
     public int getRequiredPermissionLevel()
     {
-        return 3;
+        return 1;
     }
 
     @Override

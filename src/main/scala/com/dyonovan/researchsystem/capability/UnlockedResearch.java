@@ -1,5 +1,6 @@
 package com.dyonovan.researchsystem.capability;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
@@ -53,4 +54,5 @@ public class UnlockedResearch implements IResearchCapability {
     public UUID getGroup() {
         return group != null ? group : null;
     }
+
 }
