@@ -45,9 +45,11 @@ public class ResearchManager {
 
     private static void generateDefaults() {
         ArrayList<String> list1 = new ArrayList<>(Arrays.asList("minecraft:torch", "minecraft:crafting_table"));
+        ArrayList<String> req1 = new ArrayList<>();
         ArrayList<String> list2 = new ArrayList<>(Arrays.asList("minecraft:bed", "minecraft:cauldron", "minecraft:furnace"));
-        RESEARCH_NODES.add(new ResearchNode("test", list1, list1, 20, 0, 0, 0));
-        RESEARCH_NODES.add(new ResearchNode("test1", list2, list2, 20, 20, 0, 0));
+        ArrayList<String> req2 = new ArrayList<>(Collections.singletonList("test"));
+        RESEARCH_NODES.add(new ResearchNode("test", list1, req1, 20, 0, 0, 0));
+        RESEARCH_NODES.add(new ResearchNode("test1", list2, req2, 20, 20, 0, 0));
         JsonUtils.writeToJson(RESEARCH_NODES, ResearchSystem.configDir() + File.separator + Reference.LOCKED_LISTS() + File.separator + "minecraft.json");
     }
 
