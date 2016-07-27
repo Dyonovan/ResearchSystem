@@ -5,9 +5,9 @@ import net.minecraft.entity.player.{EntityPlayer, InventoryPlayer}
 import net.minecraft.inventory.Container
 
 /**
-  * This file was created for SkyWorld
+  * This file was created for ResearchSystem
   *
-  * SkyWorld is licensed under the
+  * ResearchSystem is licensed under the
   * Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License:
   * http://creativecommons.org/licenses/by-nc-sa/4.0/
   *

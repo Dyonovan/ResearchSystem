@@ -6,9 +6,9 @@ import com.teambr.bookshelf.common.tiles.traits.UpdatingTile
 import net.minecraft.nbt.NBTTagCompound
 
 /**
-  * This file was created for SkyWorld
+  * This file was created for ResearchSystem
   *
-  * SkyWorld is licensed under the
+  * ResearchSystem is licensed under the
   * Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License:
   * http://creativecommons.org/licenses/by-nc-sa/4.0/
   *

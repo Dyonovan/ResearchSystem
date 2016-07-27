@@ -18,9 +18,9 @@ import net.minecraftforge.fml.common.{Mod, SidedProxy}
 import net.minecraftforge.oredict.RecipeSorter
 
 /**
-  * This file was created for SkyWorld
+  * This file was created for ResearchSystem
   *
-  * SkyWorld is licensed under the
+  * ResearchSystem is licensed under the
   * Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License:
   * http://creativecommons.org/licenses/by-nc-sa/4.0/
   *
@@ -30,39 +30,39 @@ import net.minecraftforge.oredict.RecipeSorter
 @Mod(modid = Reference.Mod.MOD_ID, name = Reference.Mod.MOD_NAME, version = Reference.Mod.VERSION, dependencies = Reference.Mod.DEPENDENCIES, modLanguage = "scala", updateJSON = Reference.Mod.UPDATE_JSON)
 object ResearchSystem {
 
-  var configDir: String = ""
+    var configDir: String = ""
 
-  @SidedProxy(clientSide = "com.dyonovan.researchsystem.client.ClientProxy", serverSide = "com.dyonovan.researchsystem.common.CommonProxy")
-  var proxy: CommonProxy = _
+    @SidedProxy(clientSide = "com.dyonovan.researchsystem.client.ClientProxy", serverSide = "com.dyonovan.researchsystem.common.CommonProxy")
+    var proxy: CommonProxy = _
 
-  var tabResearchSystem: CreativeTabs = new CreativeTabs(Reference.Mod.MOD_ID + ".tabResearchSystem") {
-    @SuppressWarnings(Array("NullableProblems"))
-    def getTabIconItem: Item = Item.getItemFromBlock(Blocks.NETHERRACK) //TODO switch icon
-  }
+    var tabResearchSystem: CreativeTabs = new CreativeTabs(Reference.Mod.MOD_ID + ".tabResearchSystem") {
+        @SuppressWarnings(Array("NullableProblems"))
+        def getTabIconItem: Item = Item.getItemFromBlock(Blocks.NETHERRACK) //TODO switch icon
+    }
 
-  @EventHandler
-  def preInit(event: FMLPreInitializationEvent) {
-    configDir = event.getModConfigurationDirectory.getAbsolutePath + File.separator + "ResearchSystem"
-    ConfigManager.preInit()
-    BlockManager.preInit()
-    proxy.preInit()
-    ResearchCapability.register()
-  }
+    @EventHandler
+    def preInit(event: FMLPreInitializationEvent) {
+        configDir = event.getModConfigurationDirectory.getAbsolutePath + File.separator + "ResearchSystem"
+        ConfigManager.preInit()
+        BlockManager.preInit()
+        proxy.preInit()
+        ResearchCapability.register()
+    }
 
-  @EventHandler
-  def init(event: FMLInitializationEvent) {
-    ResearchManager.init()
-    EventManager.init()
-  }
+    @EventHandler
+    def init(event: FMLInitializationEvent) {
+        ResearchManager.init()
+        EventManager.init()
+    }
 
-  @EventHandler
-  def postInit(event: FMLPostInitializationEvent) {
-    ResearchManager.removeRecipes()
-    GameRegistry.addRecipe(new CraftingCatcher)
-    RecipeSorter.register("Testing", classOf[CraftingCatcher], RecipeSorter.Category.SHAPED, "before:minecraft:shaped")
-  }
+    @EventHandler
+    def postInit(event: FMLPostInitializationEvent) {
+        ResearchManager.removeRecipes()
+        GameRegistry.addRecipe(new CraftingCatcher)
+        RecipeSorter.register("Testing", classOf[CraftingCatcher], RecipeSorter.Category.SHAPED, "before:minecraft:shaped")
+    }
 
-  @EventHandler def serverLoad(event: FMLServerStartingEvent) {
-    event.registerServerCommand(new UnlockCommand)
-  }
+    @EventHandler def serverLoad(event: FMLServerStartingEvent) {
+        event.registerServerCommand(new UnlockCommand)
+    }
 }
