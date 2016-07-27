@@ -27,7 +27,7 @@ import net.minecraftforge.oredict.RecipeSorter
   * @author Dyonovan
   * @since 7/22/2016
   */
-@Mod(modid = Reference.Mod.MOD_ID, name = Reference.Mod.MOD_NAME, version = Reference.Mod.VERSION, dependencies = Reference.Mod.DEPENDENCIES, modLanguage = "scala", updateJSON = Reference.Mod.UPDATE_JSON)
+@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, dependencies = Reference.DEPENDENCIES, modLanguage = "scala", updateJSON = Reference.UPDATE_JSON)
 object ResearchSystem {
 
     var configDir: String = ""
@@ -35,7 +35,7 @@ object ResearchSystem {
     @SidedProxy(clientSide = "com.dyonovan.researchsystem.client.ClientProxy", serverSide = "com.dyonovan.researchsystem.common.CommonProxy")
     var proxy: CommonProxy = _
 
-    var tabResearchSystem: CreativeTabs = new CreativeTabs(Reference.Mod.MOD_ID + ".tabResearchSystem") {
+    var tabResearchSystem: CreativeTabs = new CreativeTabs(Reference.MOD_ID + ".tabResearchSystem") {
         @SuppressWarnings(Array("NullableProblems"))
         def getTabIconItem: Item = Item.getItemFromBlock(Blocks.NETHERRACK) //TODO switch icon
     }

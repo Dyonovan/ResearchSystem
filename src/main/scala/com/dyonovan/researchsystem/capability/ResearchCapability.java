@@ -34,7 +34,7 @@ public class ResearchCapability {
 
     public static final EnumFacing DEFAULT_FACING = null;
 
-    public static final ResourceLocation UNLOCKED = new ResourceLocation(Reference.Mod.MOD_ID, "ResearchUnlocked");
+    public static final ResourceLocation UNLOCKED = new ResourceLocation(Reference.MOD_ID(), "ResearchUnlocked");
 
     public static void register() {
         CapabilityManager.INSTANCE.register(IResearchCapability.class, new Capability.IStorage<IResearchCapability>() {

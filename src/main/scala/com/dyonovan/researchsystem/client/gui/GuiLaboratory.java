@@ -30,7 +30,7 @@ class GuiLaboratory extends GuiContainer {
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        ResourceLocation laboratoryGui = new ResourceLocation(Reference.Mod.MOD_ID + ":textures/gui/guiLaboratory.png");
+        ResourceLocation laboratoryGui = new ResourceLocation(Reference.MOD_ID() + ":textures/gui/guiLaboratory.png");
         this.mc.getTextureManager().bindTexture(laboratoryGui);
         int i = (this.width - this.xSize) / 2;
         int j = (this.height - this.ySize) / 2;

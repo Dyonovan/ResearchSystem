@@ -39,7 +39,7 @@ public class BlockManager {
         GameRegistry.register(block);
         GameRegistry.register(new ItemBlock(block).setRegistryName(name));
 
-        GameRegistry.registerTileEntity(tile, Reference.Mod.MOD_ID + ":" + tile.getSimpleName());
+        GameRegistry.registerTileEntity(tile, Reference.MOD_ID() + ":" + tile.getSimpleName());
 
         return block;
     }

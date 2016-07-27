@@ -28,7 +28,7 @@ public class BlockLaboratory extends BlockContainer {
     public BlockLaboratory() {
         super(Material.IRON);
 
-        setUnlocalizedName(Reference.Mod.MOD_ID + ":blockLaboratory");
+        setUnlocalizedName(Reference.MOD_ID() + ":blockLaboratory");
         setCreativeTab(ResearchSystem.tabResearchSystem());
         setHardness(2.0F);
         setSoundType(SoundType.METAL);

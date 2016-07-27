@@ -18,11 +18,11 @@ import org.apache.logging.log4j.Logger;
  */
 public class LogHelper {
 
-    private static Logger logger = LogManager.getLogger(Reference.Mod.MOD_ID);
+    private static Logger logger = LogManager.getLogger(Reference.MOD_ID());
 
-    public static void log(Level level, Object toPrint) { logger.log(level, "[" + Reference.Mod.MOD_ID + "] " + toPrint.toString()); }
+    public static void log(Level level, Object toPrint) { logger.log(level, "[" + Reference.MOD_ID() + "] " + toPrint.toString()); }
 
-    public static void severe(Object toPrint) { logger.log(Level.FATAL, "[" + Reference.Mod.MOD_ID + "] " + toPrint.toString()); }
+    public static void severe(Object toPrint) { logger.log(Level.FATAL, "[" + Reference.MOD_ID() + "] " + toPrint.toString()); }
 
-    public static void info(Object toPrint) { logger.log(Level.INFO, "[" + Reference.Mod.MOD_ID + "] " + toPrint.toString()); }
+    public static void info(Object toPrint) { logger.log(Level.INFO, "[" + Reference.MOD_ID() + "] " + toPrint.toString()); }
 }

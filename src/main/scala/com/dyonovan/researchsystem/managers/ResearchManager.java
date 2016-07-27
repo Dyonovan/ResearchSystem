@@ -45,11 +45,11 @@ public class ResearchManager {
         ArrayList<String> list2 = new ArrayList<>(Arrays.asList("minecraft:bed", "minecraft:cauldron", "minecraft:furnace"));
         lockedList.add(new LockedList("test", list1, "", 20, 0, 0, 0));
         lockedList.add(new LockedList("test1", list2, "test", 20, 20, 0, 0));
-        JsonUtils.writeToJson(lockedList, ResearchSystem.configDir() + File.separator + Reference.FileLocs.LOCKED_LISTS + File.separator + "minecraft.json");
+        JsonUtils.writeToJson(lockedList, ResearchSystem.configDir() + File.separator + Reference.LOCKED_LISTS() + File.separator + "minecraft.json");
     }
 
     private static boolean loadFromFiles() {
-        File dir = new File(ResearchSystem.configDir() + File.separator + Reference.FileLocs.LOCKED_LISTS);
+        File dir = new File(ResearchSystem.configDir() + File.separator + Reference.LOCKED_LISTS());
         if (!dir.exists()) dir.mkdir();
 
         FilenameFilter filterJson = (dir1, name) -> name.toLowerCase().endsWith(".json");

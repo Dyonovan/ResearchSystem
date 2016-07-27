@@ -30,7 +30,7 @@ import net.minecraft.world.{IBlockAccess, World}
   */
 class BlockResearchManager extends BlockContainer(Material.IRON) with OpensGui {
 
-  setUnlocalizedName(Reference.Mod.MOD_ID + ":blockResearchManager")
+  setUnlocalizedName(Reference.MOD_ID + ":blockResearchManager")
   setCreativeTab(ResearchSystem.tabResearchSystem)
   setHardness(2.0F)
   setSoundType(SoundType.METAL)

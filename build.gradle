@@ -70,7 +70,7 @@ minecraft {
 
     runDir = "run"
 
-    mappings = "snapshot_20160518"
+    mappings = "${config.MAPPINGS}"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
