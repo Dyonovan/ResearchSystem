@@ -1,5 +1,8 @@
 package com.dyonovan.researchsystem.managers;
 
+import com.dyonovan.researchsystem.events.WorldEvents;
+import net.minecraftforge.common.MinecraftForge;
+
 /**
  * This file was created for Research System
  * <p>
@@ -13,6 +16,6 @@ package com.dyonovan.researchsystem.managers;
 public class EventManager {
 
     public static void init() {
-
+        MinecraftForge.EVENT_BUS.register(new WorldEvents());
     }
 }

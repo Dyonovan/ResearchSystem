@@ -42,7 +42,8 @@ public class UnlockCommand extends CommandBase {
 
         EntityPlayer player = getPlayer(server, sender, args[0]);
 
-        player.getCapability(ResearchCapability.UNLOCKED_RESEARCH, null).unlock(args[1]);
+
+        //player.getCapability(ResearchCapability.UNLOCKED_RESEARCH, null).unlock(args[1]); TODO
 
     }
 

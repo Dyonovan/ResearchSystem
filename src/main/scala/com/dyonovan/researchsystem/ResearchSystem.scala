@@ -8,6 +8,7 @@ import com.dyonovan.researchsystem.common.commands.UnlockCommand
 import com.dyonovan.researchsystem.events.CraftingCatcher
 import com.dyonovan.researchsystem.lib.Reference
 import com.dyonovan.researchsystem.managers.{BlockManager, ConfigManager, EventManager, ResearchManager}
+import com.dyonovan.researchsystem.util.SaveResearchData
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.init.Blocks
 import net.minecraft.item.Item

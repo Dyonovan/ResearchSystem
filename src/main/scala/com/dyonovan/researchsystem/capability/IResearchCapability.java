@@ -2,7 +2,9 @@ package com.dyonovan.researchsystem.capability;
 
 import net.minecraft.nbt.NBTTagList;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * This file was created for Research System
@@ -16,13 +18,11 @@ import java.util.ArrayList;
  */
 public interface IResearchCapability {
 
-    ArrayList<String> unLocked = new ArrayList<>();
-
     NBTTagList get();
 
     void set(NBTTagList nbt);
 
-    void unlock(String name);
+    void setGroup(@Nullable UUID uuid);
 
-    ArrayList<String> getResearch();
+    UUID getGroup();
 }

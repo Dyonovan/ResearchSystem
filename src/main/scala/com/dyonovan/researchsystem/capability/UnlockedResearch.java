@@ -3,7 +3,8 @@ package com.dyonovan.researchsystem.capability;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
-import java.util.ArrayList;
+import javax.annotation.Nullable;
+import java.util.UUID;
 
 /**
  * This file was created for Research System
@@ -15,41 +16,41 @@ import java.util.ArrayList;
  * @author Dyonovan
  * @since 6/26/2016
  */
-@SuppressWarnings("WeakerAccess")
 public class UnlockedResearch implements IResearchCapability {
+
+    private UUID group = null;
 
     @Override
     public NBTTagList get() {
-        NBTTagList tagList = new NBTTagList();
 
-        for (int i = 0; i < unLocked.size(); i++) {
-            String s = unLocked.get(i);
-            if (s != null) {
-                NBTTagCompound tag = new NBTTagCompound();
-                tag.setString("String" + i, s);
-                tagList.appendTag(tag);
-            }
+        NBTTagList tagList = new NBTTagList();
+        if (group != null) {
+            NBTTagCompound tag = new NBTTagCompound();
+            tag.setString("Group", group.toString());
+            tagList.appendTag(tag);
         }
         return tagList;
     }
 
     @Override
-    public void set(NBTTagList tag) {
-        unLocked.clear();
-        for (int i = 0; i < tag.tagCount(); i++) {
-            NBTTagCompound tagCompound = tag.getCompoundTagAt(i);
-            String s = tagCompound.getString("String" + i);
-            unLocked.add(s);
+    public void set(NBTTagList tagList) {
+
+        if (!tagList.hasNoTags()) {
+            NBTTagCompound tag = tagList.getCompoundTagAt(0);
+            group = UUID.fromString(tag.getString("Group"));
         }
     }
 
     @Override
-    public void unlock(String name) {
-        unLocked.add(name);
+    public void setGroup(@Nullable UUID uuid) {
+        if (uuid == null)
+            group = UUID.randomUUID();
+        else
+            group = uuid;
     }
 
     @Override
-    public ArrayList<String> getResearch() {
-        return unLocked;
+    public UUID getGroup() {
+        return group != null ? group : null;
     }
 }
