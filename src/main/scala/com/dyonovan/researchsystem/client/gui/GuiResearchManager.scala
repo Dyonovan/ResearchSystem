@@ -1,9 +1,12 @@
 package com.dyonovan.researchsystem.client.gui
 
+import com.dyonovan.researchsystem.client.gui.components.GuiComponentResearch
 import com.dyonovan.researchsystem.common.container.ContainerResearchManager
 import com.dyonovan.researchsystem.common.tileentity.TileResearchManager
 import com.teambr.bookshelf.client.gui.GuiBase
+import com.teambr.bookshelf.helper.LogHelper
 import net.minecraft.entity.player.EntityPlayer
+import org.lwjgl.input.Keyboard
 
 /**
   * This file was created for ResearchSystem
@@ -15,8 +18,27 @@ import net.minecraft.entity.player.EntityPlayer
   * @author Dyonovan
   * @since 7/22/2016
   */
-class GuiResearchManager(player: EntityPlayer, tile: TileResearchManager)
-  extends GuiBase(new ContainerResearchManager(player.inventory, tile), 175, 165, "tile.researchsystem:blockResearchManager.name"){
+class GuiResearchManager(var player: EntityPlayer, tile: TileResearchManager)
+        extends GuiBase(new ContainerResearchManager(player.inventory, tile), 250, 175, "tile.researchsystem:blockResearchManager.name") {
 
-  override def addComponents(): Unit = {}
+    lazy val RESEARCH_COMPONENT = 1
+
+    override def addComponents(): Unit = {
+        components += new GuiComponentResearch(5, 16, 95, 154, player)
+    }
+
+    /**
+      * Used when a key is pressed
+      * @param letter The letter
+      * @param keyCode The code
+      */
+    override def keyTyped(letter: Char, keyCode: Int) {
+        components(RESEARCH_COMPONENT) match {
+            case textBox: GuiComponentResearch =>
+                if(keyCode != Keyboard.KEY_ESCAPE && textBox.searchBar.getTextField.isFocused)
+                    textBox.keyTyped(letter, keyCode)
+                else
+                    super.keyTyped(letter, keyCode)
+            case _ => LogHelper.debug("This is not the text box")}
+    }
 }
