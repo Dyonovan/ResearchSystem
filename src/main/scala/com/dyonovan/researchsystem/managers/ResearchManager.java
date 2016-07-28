@@ -108,9 +108,6 @@ public class ResearchManager {
     }
 
     public static boolean isUnlocked(EntityPlayer player, String research) {
-        if (player == null || player.getCapability(ResearchCapability.UNLOCKED_RESEARCH, null).getGroup() == null)
-            return false;
-
         UUID group = player.getCapability(ResearchCapability.UNLOCKED_RESEARCH, null).getGroup();
         for (GroupResearch gr : groupResearch) {
             if (gr.getGroupUUID().equals(group)) {

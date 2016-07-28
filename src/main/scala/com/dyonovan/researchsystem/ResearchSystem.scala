@@ -8,10 +8,12 @@ import com.dyonovan.researchsystem.common.commands.{IsUnlockCommand, UnlockComma
 import com.dyonovan.researchsystem.events.CraftingCatcher
 import com.dyonovan.researchsystem.lib.Reference
 import com.dyonovan.researchsystem.managers.{BlockManager, ConfigManager, EventManager, ResearchManager}
+import com.dyonovan.researchsystem.network.PacketDispatcher
 import com.dyonovan.researchsystem.util.SaveResearchData
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.init.Blocks
 import net.minecraft.item.Item
+import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.Mod.EventHandler
 import net.minecraftforge.fml.common.event.{FMLInitializationEvent, FMLPostInitializationEvent, FMLPreInitializationEvent, FMLServerStartingEvent}
 import net.minecraftforge.fml.common.registry.GameRegistry
@@ -54,6 +56,7 @@ object ResearchSystem {
     def init(event: FMLInitializationEvent) {
         ResearchManager.init()
         EventManager.init()
+        PacketDispatcher.initPackets()
     }
 
     @EventHandler
@@ -61,6 +64,7 @@ object ResearchSystem {
         ResearchManager.removeRecipes()
         GameRegistry.addRecipe(new CraftingCatcher)
         RecipeSorter.register("Testing", classOf[CraftingCatcher], RecipeSorter.Category.SHAPED, "before:minecraft:shaped")
+
     }
 
     @EventHandler def serverLoad(event: FMLServerStartingEvent) {

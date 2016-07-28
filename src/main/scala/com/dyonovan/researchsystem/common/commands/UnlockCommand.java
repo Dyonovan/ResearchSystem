@@ -3,12 +3,17 @@ package com.dyonovan.researchsystem.common.commands;
 import com.dyonovan.researchsystem.capability.ResearchCapability;
 import com.dyonovan.researchsystem.collections.GroupResearch;
 import com.dyonovan.researchsystem.managers.ResearchManager;
+import com.dyonovan.researchsystem.network.PacketDispatcher;
+import com.dyonovan.researchsystem.network.UpdateCapabilityPacket;
 import com.dyonovan.researchsystem.util.TextUtils;
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
+import com.sun.xml.internal.ws.client.dispatch.PacketDispatch;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
@@ -44,9 +49,11 @@ public class UnlockCommand extends CommandBase {
         if (args.length != 2) throw new WrongUsageException("researchsystem:commands.unlock.usage");
 
         EntityPlayer player = getPlayer(server, sender, args[0]);
+        //todo make sure player exists
 
         if (player.getCapability(ResearchCapability.UNLOCKED_RESEARCH, null).getGroup() == null) {
             player.getCapability(ResearchCapability.UNLOCKED_RESEARCH, null).setGroup(null);
+
         }
 
         UUID group = player.getCapability(ResearchCapability.UNLOCKED_RESEARCH, null).getGroup();
@@ -56,6 +63,7 @@ public class UnlockCommand extends CommandBase {
                     //TODO add msg saying its been added
             } else throw new WrongUsageException("researchsystem:commands.unlock.alreadyunlocked");
         }
+        PacketDispatcher.net.sendTo(new UpdateCapabilityPacket(player, group), (EntityPlayerMP) player);
     }
 
     @Override
