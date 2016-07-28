@@ -3,7 +3,7 @@ package com.dyonovan.researchsystem.managers;
 import com.dyonovan.researchsystem.ResearchSystem;
 import com.dyonovan.researchsystem.capability.ResearchCapability;
 import com.dyonovan.researchsystem.collections.GroupResearch;
-import com.dyonovan.researchsystem.collections.LockedList;
+import com.dyonovan.researchsystem.collections.ResearchNode;
 import com.dyonovan.researchsystem.collections.RemovedRecipes;
 import com.dyonovan.researchsystem.lib.Reference;
 import com.dyonovan.researchsystem.util.JsonUtils;
@@ -31,7 +31,7 @@ import java.util.*;
  */
 public class ResearchManager {
 
-    private static final ArrayList<LockedList> lockedList = new ArrayList<>();
+    private static final ArrayList<ResearchNode> RESEARCH_NODES = new ArrayList<>();
     private static final ArrayList<RemovedRecipes> removedRecipes = new ArrayList<>();
     private static final ArrayList<GroupResearch> groupResearch = new ArrayList<>();
 
@@ -46,9 +46,9 @@ public class ResearchManager {
     private static void generateDefaults() {
         ArrayList<String> list1 = new ArrayList<>(Arrays.asList("minecraft:torch", "minecraft:crafting_table"));
         ArrayList<String> list2 = new ArrayList<>(Arrays.asList("minecraft:bed", "minecraft:cauldron", "minecraft:furnace"));
-        lockedList.add(new LockedList("test", list1, "", 20, 0, 0, 0));
-        lockedList.add(new LockedList("test1", list2, "test", 20, 20, 0, 0));
-        JsonUtils.writeToJson(lockedList, ResearchSystem.configDir() + File.separator + Reference.LOCKED_LISTS() + File.separator + "minecraft.json");
+        RESEARCH_NODES.add(new ResearchNode("test", list1, list1, 20, 0, 0, 0));
+        RESEARCH_NODES.add(new ResearchNode("test1", list2, list2, 20, 20, 0, 0));
+        JsonUtils.writeToJson(RESEARCH_NODES, ResearchSystem.configDir() + File.separator + Reference.LOCKED_LISTS() + File.separator + "minecraft.json");
     }
 
     private static boolean loadFromFiles() {
@@ -60,18 +60,18 @@ public class ResearchManager {
         File[] files = dir.listFiles(filterJson);
         if (files.length <= 0) return false;
 
-        TypeToken<ArrayList<LockedList>> type = new TypeToken<ArrayList<LockedList>>() {
+        TypeToken<ArrayList<ResearchNode>> type = new TypeToken<ArrayList<ResearchNode>>() {
         };
         for (File file : files) {
-            ArrayList<LockedList> list = JsonUtils.readFromJson(type, file.toString());
+            ArrayList<ResearchNode> list = JsonUtils.readFromJson(type, file.toString());
             if (list != null && !list.isEmpty())
-                lockedList.addAll(list); //TODO Add Some checks ie: if name already exists
+                RESEARCH_NODES.addAll(list); //TODO Add Some checks ie: if name already exists
         }
-        return !lockedList.isEmpty();
+        return !RESEARCH_NODES.isEmpty();
     }
 
-    public static ArrayList<LockedList> getLockedList() {
-        return lockedList;
+    public static ArrayList<ResearchNode> getResearchNodes() {
+        return RESEARCH_NODES;
     }
 
     public static ArrayList<RemovedRecipes> getRemovedRecipes() {
@@ -85,14 +85,14 @@ public class ResearchManager {
     public static void removeRecipes() {
         List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
 
-        for (LockedList list : lockedList) {
-            for (String block : list.getBlockList()) {
+        for (ResearchNode list : RESEARCH_NODES) {
+            for (String block : list.getUnlockables()) {
                 for (int i = 0; i < recipeList.size(); i++) {
                     IRecipe recipe = recipeList.get(i);
                     if (recipe.getRecipeOutput() == null) continue;
                     ItemStack item = GameRegistry.makeItemStack(block, 0, 1, null);
                     if (item != null && recipe.getRecipeOutput().isItemEqual(item)) {
-                        removedRecipes.add(new RemovedRecipes(list.getName(), recipeList.get(i)));
+                        removedRecipes.add(new RemovedRecipes(list.getTitle(), recipeList.get(i)));
                         recipeList.remove(i);
                     }
                 }

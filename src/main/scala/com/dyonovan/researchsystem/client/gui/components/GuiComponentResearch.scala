@@ -22,7 +22,7 @@ class GuiComponentResearch(x : Int, y : Int, var width : Int, var height : Int, 
     extends BaseComponent(x, y) {
 
     //Data
-    var
+
 
     //Backgrounds
     var backgroundList     = new GuiComponentColoredZone(x, y, width, height, new Color(0, 255, 0, 150))
