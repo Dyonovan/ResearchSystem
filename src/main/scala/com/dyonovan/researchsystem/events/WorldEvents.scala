@@ -1,9 +1,13 @@
 package com.dyonovan.researchsystem.events
 
+import com.dyonovan.researchsystem.capability.ResearchCapability
 import com.dyonovan.researchsystem.managers.ResearchManager
+import com.dyonovan.researchsystem.network.{PacketDispatcher, UpdateCapabilityPacket}
 import com.dyonovan.researchsystem.util.SaveResearchData
+import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraftforge.event.world.WorldEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraftforge.fml.common.gameevent.PlayerEvent
 
 /**
   * This file was created for ResearchSystem
@@ -25,6 +29,16 @@ class WorldEvents {
     @SubscribeEvent
     def onWorldLoad(event: WorldEvent.Load): Unit = {
         SaveResearchData.LoadData()
+    }
+
+    @SubscribeEvent
+    def onPlayerJoin(event: PlayerEvent.PlayerLoggedInEvent): Unit = {
+        val player = event.player
+        if (player.getCapability(ResearchCapability.UNLOCKED_RESEARCH, null).getGroup != null) {
+            val uuid = player.getCapability(ResearchCapability.UNLOCKED_RESEARCH, null).getGroup
+            PacketDispatcher.net.sendTo(new UpdateCapabilityPacket(player, uuid), player.asInstanceOf[EntityPlayerMP])
+        }
+
     }
 
 }
