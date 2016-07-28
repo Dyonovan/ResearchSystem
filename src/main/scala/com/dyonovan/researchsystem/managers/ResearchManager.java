@@ -9,6 +9,7 @@ import com.dyonovan.researchsystem.lib.Reference;
 import com.dyonovan.researchsystem.util.JsonUtils;
 import com.dyonovan.researchsystem.util.LogHelper;
 import com.google.gson.reflect.TypeToken;
+import com.ibm.icu.impl.duration.impl.DataRecord;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -30,6 +31,10 @@ import java.util.*;
  * @since 6/26/2016
  */
 public class ResearchManager {
+
+    public enum Status {
+        ABLE, NOT_ABLE, COMPLETED
+    }
 
     private static final ArrayList<ResearchNode> RESEARCH_NODES = new ArrayList<>();
     private static final ArrayList<RemovedRecipes> removedRecipes = new ArrayList<>();
@@ -108,7 +113,7 @@ public class ResearchManager {
 
         UUID group = player.getCapability(ResearchCapability.UNLOCKED_RESEARCH, null).getGroup();
         for (GroupResearch gr : groupResearch) {
-            if (gr.getGroupUUID() == group) {
+            if (gr.getGroupUUID().equals(group)) {
                 if (gr.getUnlockedResearch().contains(research)) return true;
             }
         }
@@ -117,12 +122,28 @@ public class ResearchManager {
 
     public static void setUnlocked(UUID group, String research) {
         for (GroupResearch gr : groupResearch) {
-            if (gr.getGroupUUID() == group) {
+            if (gr.getGroupUUID().equals(group)) {
                 if (!gr.getUnlockedResearch().contains(research))
                     gr.getUnlockedResearch().add(research);
                 return;
             }
         }
         groupResearch.add(new GroupResearch(group, new ArrayList<>(Collections.singletonList(research))));
+    }
+
+    public static Status getResearchStatus(EntityPlayer player, String research) {
+        if (isUnlocked(player, research))
+            return Status.COMPLETED;
+
+        for (ResearchNode re : RESEARCH_NODES) {
+            if (re.getTitle().equals(research)) {
+                ArrayList<String> prev = re.getRequirements();
+                if (prev.isEmpty()) return Status.ABLE;
+                for (String st : prev) {
+                    if (!isUnlocked(player, st)) return Status.NOT_ABLE;
+                }
+            }
+        }
+        return Status.ABLE;
     }
 }

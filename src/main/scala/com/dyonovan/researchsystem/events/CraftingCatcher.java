@@ -34,8 +34,7 @@ public class CraftingCatcher implements IRecipe {
         for (RemovedRecipes removedRecipes: ResearchManager.getRemovedRecipes()) {
             recipe = removedRecipes.getRecipe();
             if (recipe.matches(inv, world)) {
-                if (ResearchManager.isUnlocked(player, removedRecipes.getName()))
-                    return true;
+                return ResearchManager.isUnlocked(player, removedRecipes.getName());
             }
         }
         return false;
