@@ -2,17 +2,20 @@ package com.dyonovan.researchsystem.client.gui.components
 
 import java.awt.Color
 import java.util
+import java.util.Comparator
 
+import com.dyonovan.researchsystem.client.gui.GuiResearchManagerConstants
 import com.dyonovan.researchsystem.collections.ResearchNode
 import com.dyonovan.researchsystem.managers.ResearchManager
-import com.teambr.bookshelf.client.gui.{GuiBase, GuiColor}
+import com.dyonovan.researchsystem.managers.ResearchManager.Status
 import com.teambr.bookshelf.client.gui.component.BaseComponent
 import com.teambr.bookshelf.client.gui.component.control.{GuiComponentButton, GuiComponentScrollBar, GuiComponentTextBox}
-import com.teambr.bookshelf.client.gui.component.display.GuiComponentColoredZone
+import com.teambr.bookshelf.client.gui.component.display.{GuiComponentColoredZone, GuiComponentText}
+import com.teambr.bookshelf.client.gui.{GuiBase, GuiColor}
 import com.teambr.bookshelf.util.RenderUtils
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiScreen
-import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.{GlStateManager, RenderHelper}
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.Container
 import net.minecraft.item.ItemStack
@@ -39,11 +42,13 @@ class GuiComponentResearch(x : Int, y : Int, var width : Int, var height : Int, 
     var activeNode : ResearchNode = null
 
     //Backgrounds
-    var backgroundList     = new GuiComponentColoredZone(x, y, width, height, new Color(0, 255, 0, 150))
-    var backgroundRequired = new GuiComponentColoredZone(x + width + 2, y, 250 - width - 12, 50, new Color(255, 0, 0, 150))
-    var backgroundTree     = new GuiComponentColoredZone(x + width + 2, y + 52, 250 - width - 12, height - 52, new Color(0, 0, 255, 150))
+    var backgroundList     = new GuiComponentColoredZone(x, y, width, height, new Color(150, 150, 150, 150))
+    var backgroundRequired = new GuiComponentColoredZone(x + width + 2, y, 250 - width - 12, 55, new Color(150, 150, 150, 150))
+    var backgroundRequiredTitle = new GuiComponentColoredZone(x + width + 2, y, 250 - width - 12, 14, new Color(150, 150, 150, 150))
+    var backgroundTree     = new GuiComponentColoredZone(x + width + 2, y + 57, 250 - width - 12, height - 57, new Color(150, 150, 150, 150))
+    var backgroundTreeTitle     = new GuiComponentColoredZone(x + width + 2, y + 57, 250 - width - 12, 14, new Color(150, 150, 150, 150))
 
-    // List components
+    // List Components
     var searchBar = new GuiComponentTextBox(x + 1, y + 1, width - 2, 14) {
         override def fieldUpdated(value: String): Unit = {}
     }
@@ -56,8 +61,15 @@ class GuiComponentResearch(x : Int, y : Int, var width : Int, var height : Int, 
     }
     var currentScroll = 0F
 
-    lazy val MAX_SIZE_LIST = 5
+    lazy val MAX_SIZE_LIST = 8
     var currentButtons : Array[GuiComponentButton] = _
+
+    // Unlock Components
+    var requiredTitle = new GuiComponentText("NONE", x + width + 6, y + 3)
+
+    // Required Components
+    var requiredResearchTitle = new GuiComponentText("Required Research", x + width + 6, y + 60)
+    var requiredButtons : Array[GuiComponentButton] = _
 
     /***
       * Called to load important bits, load research here
@@ -68,6 +80,9 @@ class GuiComponentResearch(x : Int, y : Int, var width : Int, var height : Int, 
         visibleNodes.addAll(ResearchManager.getResearchNodes)
 
         updateButtons()
+
+        if(GuiResearchManagerConstants.currentResearchNode != null)
+            setViewedResearch(GuiResearchManagerConstants.currentResearchNode)
     }
 
     /**
@@ -79,7 +94,9 @@ class GuiComponentResearch(x : Int, y : Int, var width : Int, var height : Int, 
 
         backgroundList.render(guiLeft, guiTop, mouseX, mouseY)
         backgroundRequired.render(guiLeft, guiTop, mouseX, mouseY)
+        backgroundRequiredTitle.render(guiLeft, guiTop, mouseX, mouseY)
         backgroundTree.render(guiLeft, guiTop, mouseX, mouseY)
+        backgroundTreeTitle.render(guiLeft, guiTop, mouseX, mouseY)
 
         GlStateManager.popAttrib()
 
@@ -90,7 +107,7 @@ class GuiComponentResearch(x : Int, y : Int, var width : Int, var height : Int, 
         searchBar.render(guiLeft, guiTop, mouseX, mouseY)
         listScrollBar.render(guiLeft, guiTop, mouseX, mouseY)
 
-        for(z <- 0 to MAX_SIZE_LIST) {
+        for(z <- 0 until MAX_SIZE_LIST) {
             if(visibleNodes.size() > z &&
                     currentButtons(z) != null) {
                 GlStateManager.pushMatrix()
@@ -100,6 +117,19 @@ class GuiComponentResearch(x : Int, y : Int, var width : Int, var height : Int, 
                 GlStateManager.popMatrix()
             }
         }
+
+        GlStateManager.popAttrib()
+        GlStateManager.popMatrix()
+
+        // Required Components
+        GlStateManager.pushMatrix()
+        GlStateManager.pushAttrib()
+
+        requiredTitle.render(guiLeft, guiTop, mouseX, mouseY)
+
+        if(requiredButtons != null)
+            for(button <- requiredButtons)
+                button.render(guiLeft, guiTop, mouseX, mouseY)
 
         GlStateManager.popAttrib()
         GlStateManager.popMatrix()
@@ -116,13 +146,23 @@ class GuiComponentResearch(x : Int, y : Int, var width : Int, var height : Int, 
         searchBar.renderOverlay(guiLeft, guiTop, mouseX, mouseY)
         listScrollBar.renderOverlay(guiLeft, guiTop, mouseX, mouseY)
 
-        for(z <- 0 to MAX_SIZE_LIST) {
+        for(z <- 0 until MAX_SIZE_LIST) {
             if(visibleNodes.size() > z && currentButtons(z) != null) {
                 GlStateManager.pushMatrix()
                 GlStateManager.pushAttrib()
 
                 // Pop out text so we can manipulate it
                 val string = currentButtons(z).label
+                var color = ""
+
+                // Color the label
+                ResearchManager.getResearchStatus(player, string) match {
+                    case Status.ABLE => color = GuiColor.GREEN + ""
+                    case Status.NOT_ABLE => color = GuiColor.GRAY + ""
+                    case Status.COMPLETED => color = GuiColor.BLUE + ""
+                    case _ =>
+                }
+
                 val size: Int = Minecraft.getMinecraft.fontRendererObj.getStringWidth(string)
                 var scale : Float = 1.0F
                 val maxWidth = width - 20
@@ -139,12 +179,81 @@ class GuiComponentResearch(x : Int, y : Int, var width : Int, var height : Int, 
                 GL11.glTranslated((currentButtons(z).xPos + (currentButtons(z).width / 2 - (size * scale) / 2)) / scale,
                     (currentButtons(z).yPos + 4 + ((1 - scale) * 3 / 1.0)) / scale, 0)
                 RenderUtils.prepareRenderState()
-                Minecraft.getMinecraft.fontRendererObj.drawString(string, 0, 0, 0xFFFFFF)
+                Minecraft.getMinecraft.fontRendererObj.drawString(color + string, 0, 0, 0xFFFFFF)
 
                 GlStateManager.popAttrib()
                 GlStateManager.popMatrix()
             }
         }
+
+        GlStateManager.popAttrib()
+        GlStateManager.popMatrix()
+
+        // Required Components
+        GlStateManager.pushMatrix()
+        GlStateManager.pushAttrib()
+
+        if(GuiResearchManagerConstants.currentResearchNode != null) {
+            requiredTitle.setText(GuiResearchManagerConstants.currentResearchNode.getTitle)
+            requiredTitle.renderOverlay(guiLeft, guiTop, mouseX, mouseY)
+
+            for(i <- 0 until GuiResearchManagerConstants.currentResearchNode.getUnlockables.size) {
+                if(i < 16) {
+                    val unlock = GuiResearchManagerConstants.currentResearchNode.getUnlockables.get(i)
+                    if (getItemStackFromString(unlock) != null) {
+                        GlStateManager.pushMatrix()
+                        GlStateManager.pushAttrib()
+
+                        RenderHelper.enableGUIStandardItemLighting()
+
+                        RenderUtils.bindGuiComponentsSheet()
+                        this.drawTexturedModalRect(102 + (if (i <= 7) i * 18 else (i - 8) * 18),
+                            if (i <= 7) 32 else 32 + 18, 0, 20, 18, 18)
+                        Minecraft.getMinecraft.getRenderItem.renderItemAndEffectIntoGUI(getItemStackFromString(unlock),
+                            103 + (if (i <= 7) i * 18 else (i - 8) * 18),
+                            if (i <= 7) 33 else 33 + 18)
+
+                        RenderHelper.disableStandardItemLighting()
+
+                        GlStateManager.popAttrib()
+                        GlStateManager.popMatrix()
+                        RenderUtils.restoreColor()
+                    }
+                }
+            }
+
+            requiredResearchTitle.renderOverlay(guiLeft, guiTop, mouseX, mouseY)
+        }
+
+        if(requiredButtons != null)
+            for(button <- requiredButtons) {
+                GlStateManager.pushMatrix()
+                GlStateManager.pushAttrib()
+
+                // Pop out text so we can manipulate it
+                val string = button.label
+
+                val size: Int = Minecraft.getMinecraft.fontRendererObj.getStringWidth(string)
+                var scale : Float = 1.0F
+                val maxWidth = width - 20
+
+                if(size > maxWidth) {
+                    val different : Float = size - maxWidth
+                    scale = 1.0F - (different / size.toFloat)
+                }
+
+                if(scale == 0)
+                    scale = 0.01F
+
+                GL11.glScaled(scale, scale, 0)
+                GL11.glTranslated((button.xPos + (button.width / 2 - (size * scale) / 2)) / scale,
+                    (button.yPos + 3 + ((1 - scale) * 3 / 1.0)) / scale, 0)
+                RenderUtils.prepareRenderState()
+                Minecraft.getMinecraft.fontRendererObj.drawString(string, 0, 0, 0xFFFFFF)
+
+                GlStateManager.popAttrib()
+                GlStateManager.popMatrix()
+            }
 
         GlStateManager.popAttrib()
         GlStateManager.popMatrix()
@@ -155,7 +264,25 @@ class GuiComponentResearch(x : Int, y : Int, var width : Int, var height : Int, 
       * @param node The new active node
       */
     def setViewedResearch(node : ResearchNode) : Unit = {
+        GuiResearchManagerConstants.currentResearchNode = node
 
+        requiredButtons = new Array[GuiComponentButton](node.getRequirements.size)
+        for(i <- 0 until node.getRequirements.size) {
+            val require = node.getRequirements.get(i)
+            if(require != null)
+                requiredButtons(i) = new GuiComponentButton(
+                    x + width + - 2 + (if(i % 2 == 0) 4 else 5 + (250 - width - 12) / 2),
+                    y + 57 + 14 + ((i / 2) * 15),
+                    (250 - width - 12) / 2,
+                    14,
+                    require) {
+                    override def doAction(): Unit = {
+                        val newNode = ResearchManager.getNodeByName(label)
+                        if(newNode != null)
+                            setViewedResearch(newNode)
+                    }
+                }
+        }
     }
 
     /**
@@ -195,6 +322,39 @@ class GuiComponentResearch(x : Int, y : Int, var width : Int, var height : Int, 
             }
         }
 
+        // Sorting
+        visibleNodes.sort(new Comparator[ResearchNode] {
+            override def compare(o1: ResearchNode, o2: ResearchNode): Int = {
+                val first = ResearchManager.getResearchStatus(player, o1.getTitle)
+                val second = ResearchManager.getResearchStatus(player, o2.getTitle)
+
+                first match {
+                    case Status.ABLE =>
+                        second match {
+                            case Status.ABLE => 0
+                            case Status.NOT_ABLE => -1
+                            case Status.COMPLETED => -2
+                            case _ => 0
+                        }
+                    case Status.NOT_ABLE =>
+                        second match {
+                            case Status.ABLE => 1
+                            case Status.NOT_ABLE => 0
+                            case Status.COMPLETED => -1
+                            case _ => 0
+                        }
+                    case Status.COMPLETED =>
+                        second match {
+                            case Status.ABLE => 2
+                            case Status.NOT_ABLE => 1
+                            case Status.COMPLETED => 0
+                            case _ => 0
+                        }
+                    case _ => 0
+                }
+            }
+        })
+
         updateButtons()
     }
 
@@ -203,11 +363,11 @@ class GuiComponentResearch(x : Int, y : Int, var width : Int, var height : Int, 
       */
     def updateButtons() : Unit = {
         currentButtons = new Array[GuiComponentButton](MAX_SIZE_LIST)
-        for(z <- 0 to MAX_SIZE_LIST) {
+        for(z <- 0 until MAX_SIZE_LIST) {
             if(visibleNodes.size() > z) {
                 val node = visibleNodes.get(z)
 
-                currentButtons(z) = new GuiComponentButton(x, y + 16 + (z * 16), width - 14, 16, node.getTitle) {
+                currentButtons(z) = new GuiComponentButton(x + 1, y + 17 + (z * 17), width - 16, 16, node.getTitle) {
                     override def doAction(): Unit = {
                         setViewedResearch(node)
                     }
@@ -239,13 +399,20 @@ class GuiComponentResearch(x : Int, y : Int, var width : Int, var height : Int, 
         if (listScrollBar.isMouseOver(mouseX, y))
             listScrollBar.mouseDown(mouseX, y, button)
 
-        for (z <- 0 to MAX_SIZE_LIST) {
+        for (z <- 0 until MAX_SIZE_LIST) {
             if (visibleNodes.size() > z &&
                     currentButtons(z) != null) {
                 if(currentButtons(z).isMouseOver(mouseX, y))
                     currentButtons(z).mouseDown(mouseX, y, button)
             }
         }
+
+        if(requiredButtons != null)
+            for(require <- requiredButtons) {
+                if(require.isMouseOver(mouseX, y))
+                    require.mouseDown(mouseX, y, button)
+            }
+
         updateVisibleNodes()
     }
 
@@ -276,12 +443,17 @@ class GuiComponentResearch(x : Int, y : Int, var width : Int, var height : Int, 
       * Called to check if mouse is over
       */
     override def isMouseOver(mouseX: Int, mouseY: Int): Boolean = {
-        for (z <- 0 to MAX_SIZE_LIST) {
+        for (z <- 0 until MAX_SIZE_LIST) {
             if (visibleNodes.size() > z &&
                     currentButtons(z) != null) {
                 currentButtons(z).isMouseOver(mouseX, mouseY)
             }
         }
+
+        if(requiredButtons != null)
+            for(button <- requiredButtons)
+                button.isMouseOver(mouseX, mouseY)
+
         super.isMouseOver(mouseX, mouseY)
     }
 
