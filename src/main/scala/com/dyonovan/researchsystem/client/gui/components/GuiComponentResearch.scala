@@ -77,9 +77,8 @@ class GuiComponentResearch(x : Int, y : Int, var width : Int, var height : Int, 
     override def initialize(): Unit = {
         //Load all research
         visibleNodes = new util.ArrayList[ResearchNode]()
-        visibleNodes.addAll(ResearchManager.getResearchNodes)
 
-        updateButtons()
+        updateVisibleNodes()
 
         if(GuiResearchManagerConstants.currentResearchNode != null)
             setViewedResearch(GuiResearchManagerConstants.currentResearchNode)
@@ -290,7 +289,7 @@ class GuiComponentResearch(x : Int, y : Int, var width : Int, var height : Int, 
       */
     def updateVisibleNodes() : Unit = {
         //Filter out by text field
-        val filterString = searchBar.getTextField.getText.toLowerCase
+        val filterString = if(searchBar != null) searchBar.getTextField.getText.toLowerCase else ""
         // Clear listing
         visibleNodes.clear()
 
