@@ -25,10 +25,11 @@ object SaveResearchData {
 
     val mcDir = DimensionManager.getCurrentSaveRootDirectory
     val dataDir = new File(mcDir, "ResearchSystem")
-    dataDir.mkdir()
     val dataFile = new File(dataDir, "ResearchSystem.dat")
 
     def SaveData(): Unit = {
+        if (!dataDir.exists())
+            dataDir.mkdir()
 
         val nbtList = new NBTTagList
         val rs = ResearchManager.getGroupResearch.asScala

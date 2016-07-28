@@ -122,7 +122,14 @@ public class ResearchManager {
     }
 
     public static boolean setUnlocked(UUID group, String research) {
-        if (!RESEARCH_NODES.contains(research)) return false;
+        boolean found = false;
+        for (ResearchNode re : RESEARCH_NODES) {
+            if (re.getTitle().equals(research)) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) return false;
 
         for (GroupResearch gr : groupResearch) {
             if (gr.getGroupUUID().equals(group)) {

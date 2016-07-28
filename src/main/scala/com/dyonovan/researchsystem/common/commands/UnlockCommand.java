@@ -62,7 +62,7 @@ public class UnlockCommand extends CommandBase {
         if (!ResearchManager.getGroupResearch().contains(group)) {
             if (!ResearchManager.isUnlocked(player, research)) {
                 if (ResearchManager.setUnlocked(group, research))
-                    sender.addChatMessage(new TextComponentString(TextUtils.translate("researchsystem:commands.unlock.done") + " " + research + "for " + player.getName()));
+                    sender.addChatMessage(new TextComponentString(TextUtils.translate("researchsystem:commands.unlock.done") + " " + research + " for " + player.getName()));
                 else throw new SyntaxErrorException("researchsystem:commands.unlock.notfound");
             } else throw new SyntaxErrorException("researchsystem:commands.unlock.alreadyunlocked");
         }
@@ -77,7 +77,7 @@ public class UnlockCommand extends CommandBase {
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        return args.length == 1 ? getListOfStringsMatchingLastWord(args, server.getPlayerList().getPlayerList()) : Collections.emptyList();
+        return args.length == 1 ? getListOfStringsMatchingLastWord(args, server.getAllUsernames()) : Collections.emptyList();
     }
 
     @Override
