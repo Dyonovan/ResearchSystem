@@ -146,4 +146,12 @@ public class ResearchManager {
         }
         return Status.ABLE;
     }
+
+    public static ResearchNode getNodeByName(String research) {
+        for (ResearchNode re : RESEARCH_NODES) {
+            if (re.getTitle().equals(research))
+                return re;
+        }
+        return null;
+    }
 }

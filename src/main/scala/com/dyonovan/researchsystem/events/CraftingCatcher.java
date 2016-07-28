@@ -43,7 +43,7 @@ public class CraftingCatcher implements IRecipe {
     @Nullable
     @Override
     public ItemStack getCraftingResult(InventoryCrafting inv) {
-        return (recipe == null) ? null : recipe.getCraftingResult(inv);
+        return (recipe == null) ? null : recipe.getRecipeOutput().copy();
     }
 
     @Override
