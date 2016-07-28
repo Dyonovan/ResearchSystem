@@ -1,6 +1,6 @@
 package com.dyonovan.researchsystem.common.container
 
-import com.dyonovan.researchsystem.common.tileentity.TileResearchManager
+import com.dyonovan.researchsystem.common.tileentity.TileLaboratory
 import net.minecraft.entity.player.{EntityPlayer, InventoryPlayer}
 import net.minecraft.inventory.Container
 
@@ -12,9 +12,9 @@ import net.minecraft.inventory.Container
   * http://creativecommons.org/licenses/by-nc-sa/4.0/
   *
   * @author Dyonovan
-  * @since 7/22/2016
+  * @since 7/28/2016
   */
-class ContainerResearchManager(playerInventory: InventoryPlayer, tile: TileResearchManager) extends Container {
+class ContainerLaboratory(playerInventory: InventoryPlayer, tile: TileLaboratory) extends Container {
 
-  override def canInteractWith(playerIn: EntityPlayer): Boolean = true
+    override def canInteractWith(playerIn: EntityPlayer): Boolean = true
 }

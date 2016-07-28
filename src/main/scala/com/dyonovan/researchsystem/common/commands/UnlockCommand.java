@@ -8,19 +8,15 @@ import com.dyonovan.researchsystem.network.UpdateCapabilityPacket;
 import com.dyonovan.researchsystem.util.TextUtils;
 import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import com.sun.xml.internal.ws.client.dispatch.PacketDispatch;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
+import net.minecraft.command.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * This file was created for Research System
@@ -46,24 +42,30 @@ public class UnlockCommand extends CommandBase {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if (args.length != 2) throw new WrongUsageException("researchsystem:commands.unlock.usage");
+        if (args.length < 2) throw new WrongUsageException("researchsystem:commands.unlock.usage");
+
+        String research = "";
+        for (int i = 1; i < args.length; i++) {
+            if (research.isEmpty())
+                research = args[i];
+            else
+                research += " " + args[i];
+        }
 
         EntityPlayer player = getPlayer(server, sender, args[0]);
-        //todo make sure player exists
 
         if (player.getCapability(ResearchCapability.UNLOCKED_RESEARCH, null).getGroup() == null) {
-            player.getCapability(ResearchCapability.UNLOCKED_RESEARCH, null).setGroup(null);
-
+            ResearchManager.addGroupToPlayer(null, player);
         }
 
         UUID group = player.getCapability(ResearchCapability.UNLOCKED_RESEARCH, null).getGroup();
         if (!ResearchManager.getGroupResearch().contains(group)) {
-            if (!ResearchManager.isUnlocked(player, args[1])) {
-                ResearchManager.setUnlocked(group, args[1]);
-                    //TODO add msg saying its been added
-            } else throw new WrongUsageException("researchsystem:commands.unlock.alreadyunlocked");
+            if (!ResearchManager.isUnlocked(player, research)) {
+                if (ResearchManager.setUnlocked(group, research))
+                    sender.addChatMessage(new TextComponentString(TextUtils.translate("researchsystem:commands.unlock.done") + " " + research + "for " + player.getName()));
+                else throw new SyntaxErrorException("researchsystem:commands.unlock.notfound");
+            } else throw new SyntaxErrorException("researchsystem:commands.unlock.alreadyunlocked");
         }
-        PacketDispatcher.net.sendTo(new UpdateCapabilityPacket(player, group), (EntityPlayerMP) player);
     }
 
     @Override
@@ -75,7 +77,7 @@ public class UnlockCommand extends CommandBase {
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        return args.length == 1 ? getListOfStringsMatchingLastWord(args, server.getPlayerList().getOppedPlayerNames()) : Collections.<String>emptyList();
+        return args.length == 1 ? getListOfStringsMatchingLastWord(args, server.getPlayerList().getPlayerList()) : Collections.emptyList();
     }
 
     @Override

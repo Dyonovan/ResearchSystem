@@ -35,12 +35,6 @@ class BlockResearchManager extends BlockContainer(Material.IRON) with OpensGui {
   setHardness(2.0F)
   setSoundType(SoundType.METAL)
 
-  override def onBlockPlacedBy(world: World, pos: BlockPos, state: IBlockState, placer: EntityLivingBase, stack: ItemStack) {
-    val te: TileEntity = world.getTileEntity(pos)
-    if (te != null && te.isInstanceOf[TileResearchManager])
-      te.asInstanceOf[TileResearchManager].setOwner(placer.getUniqueID)
-  }
-
   override def getServerGuiElement(ID: Int, player: EntityPlayer, world: World, x: Int, y: Int, z: Int): AnyRef = {
     val te = world.getTileEntity(new BlockPos(x, y, z))
     te match {

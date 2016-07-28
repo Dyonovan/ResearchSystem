@@ -6,16 +6,20 @@ import com.dyonovan.researchsystem.collections.GroupResearch;
 import com.dyonovan.researchsystem.collections.ResearchNode;
 import com.dyonovan.researchsystem.collections.RemovedRecipes;
 import com.dyonovan.researchsystem.lib.Reference;
+import com.dyonovan.researchsystem.network.PacketDispatcher;
+import com.dyonovan.researchsystem.network.UpdateCapabilityPacket;
 import com.dyonovan.researchsystem.util.JsonUtils;
 import com.dyonovan.researchsystem.util.LogHelper;
 import com.google.gson.reflect.TypeToken;
 import com.ibm.icu.impl.duration.impl.DataRecord;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.*;
@@ -117,15 +121,18 @@ public class ResearchManager {
         return false;
     }
 
-    public static void setUnlocked(UUID group, String research) {
+    public static boolean setUnlocked(UUID group, String research) {
+        if (!RESEARCH_NODES.contains(research)) return false;
+
         for (GroupResearch gr : groupResearch) {
             if (gr.getGroupUUID().equals(group)) {
                 if (!gr.getUnlockedResearch().contains(research))
                     gr.getUnlockedResearch().add(research);
-                return;
+                return true;
             }
         }
         groupResearch.add(new GroupResearch(group, new ArrayList<>(Collections.singletonList(research))));
+        return true;
     }
 
     public static Status getResearchStatus(EntityPlayer player, String research) {
@@ -150,5 +157,11 @@ public class ResearchManager {
                 return re;
         }
         return null;
+    }
+
+    public static void addGroupToPlayer(@Nullable UUID group, EntityPlayer player) {
+        player.getCapability(ResearchCapability.UNLOCKED_RESEARCH, null).setGroup(group);
+
+        PacketDispatcher.net.sendTo(new UpdateCapabilityPacket(player, player.getCapability(ResearchCapability.UNLOCKED_RESEARCH, null).getGroup()), (EntityPlayerMP) player);
     }
 }

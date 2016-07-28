@@ -2,3 +2,8 @@ itemGroup.researchsystem.tabResearchSystem=Research System
 
 tile.researchsystem:blockLaboratory.name=Laboratory
 tile.researchsystem:blockResearchManager.name=Research Manager
+
+researchsystem:commands.unlock.usage=/research_unlock <player> <research name>
+researchsystem:commands.unlock.alreadyunlocked=Research is already unlocked...
+researchsystem:commands.unlock.done=Unlocked
+researchsystem:commands.unlock.notfound=Research not found...
